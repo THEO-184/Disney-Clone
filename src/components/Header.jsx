@@ -1,6 +1,9 @@
-import React from "react";
-import { setUserLoginDetails } from "../features/users/userSlice";
-import { signInWithPopup } from "firebase/auth";
+import React, { useEffect } from "react";
+import {
+	setUserLoginDetails,
+	setSignOutState,
+} from "../features/users/userSlice";
+import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, provider } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -10,7 +13,7 @@ const Header = (props) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const userName = useSelector((state) => state.user.name);
-	const userEmail = useSelector((state) => state.user.email);
+	// const userEmail = useSelector((state) => state.user.email);
 	const userPhoto = useSelector((state) => state.user.photo);
 
 	const setUser = (user) => {
@@ -24,13 +27,36 @@ const Header = (props) => {
 	};
 
 	const handleAuth = () => {
-		signInWithPopup(auth, provider)
-			.then((result) => {
-				setUser(result.user);
-				console.log(result);
-			})
-			.catch((error) => alert(error.message));
+		if (!userName) {
+			signInWithPopup(auth, provider)
+				.then((result) => {
+					setUser(result.user);
+					console.log(result);
+				})
+				.catch((error) => alert(error.message));
+		} else {
+			signOut(auth)
+				.then(() => {
+					dispatch(setSignOutState());
+					navigate("/");
+				})
+				.catch((error) => alert(error.message));
+		}
 	};
+
+	useEffect(() => {
+		onAuthStateChanged(auth, async (user) => {
+			if (user) {
+				setUser(user);
+				navigate(`/home`);
+				// ...
+			} else {
+				// User is signed out
+				// ...
+			}
+		});
+	}, [userName]);
+
 	return (
 		<Nav>
 			<Logo>
@@ -66,7 +92,12 @@ const Header = (props) => {
 							<span>SERIES</span>
 						</button>
 					</NavMenu>
-					<UserImg src={userPhoto} alt={userName} />
+					<SignOut>
+						<UserImg src={userPhoto} alt={userName} />
+						<Dropdown>
+							<span onClick={handleAuth}>Sign Out</span>
+						</Dropdown>
+					</SignOut>
 				</>
 			)}
 		</Nav>
@@ -184,8 +215,41 @@ const Login = styled.a`
 `;
 
 const UserImg = styled.img`
-	height: 40px;
-	width: 40px;
-	border-radius: 50px;
+	height: 100%;
+	width: 100%;
+	border-radius: 50%;
 `;
+
+const Dropdown = styled.div`
+	position: absolute;
+	top: 41px;
+	right: -3px;
+	background-color: rgb(19, 19, 19);
+	border: 1px solid rgba(151, 151, 151, 0.34);
+	border-radius: 4px;
+	letter-spacing: 1.7px;
+	font-size: 14px;
+	cursor: pointer;
+	width: 100px;
+	opacity: 0;
+	padding: 10px;
+`;
+
+const SignOut = styled.div`
+	position: relative;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+
+	&:hover {
+		${Dropdown} {
+			opacity: 1;
+			transition-delay: 0.2s;
+		}
+	}
+`;
+
 export default Header;
