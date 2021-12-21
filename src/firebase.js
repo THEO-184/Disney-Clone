@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore/lite";
+import { getFirestore, collection } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
@@ -22,6 +22,11 @@ provider.setCustomParameters({
 	prompt: "select_account",
 });
 
+// collection ref
+const colRef = collection(db, "movies");
+
+// get collection Data
+
 const storage = getStorage(firebaseApp);
-export { auth, provider, storage };
+export { auth, provider, storage, colRef };
 export default db;
