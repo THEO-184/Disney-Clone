@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { selectOriginal } from "../features/movie/movieSlice";
 const Originals = () => {
 	const movies = useSelector(selectOriginal);
+	console.log(movies);
 	return (
 		<Container>
 			{movies && <h4>Originals</h4>}

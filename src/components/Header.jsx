@@ -4,6 +4,7 @@ import {
 	setSignOutState,
 } from "../features/users/userSlice";
 import { signInWithPopup, onAuthStateChanged, signOut } from "firebase/auth";
+import { Link } from "react-router-dom";
 import { auth, provider } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -67,10 +68,12 @@ const Header = (props) => {
 			) : (
 				<>
 					<NavMenu>
-						<button>
-							<img src="/images/home-icon.svg" alt="HOME" />
-							<span>HOME</span>
-						</button>
+						<Link to="/home">
+							<button>
+								<img src="/images/home-icon.svg" alt="HOME" />
+								<span>HOME</span>
+							</button>
+						</Link>
 						<button>
 							<img src="/images/search-icon.svg" alt="SEARCH" />
 							<span>SEARCH</span>
