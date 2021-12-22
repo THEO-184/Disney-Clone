@@ -230,7 +230,7 @@ const Dropdown = styled.div`
 	letter-spacing: 1.7px;
 	font-size: 14px;
 	cursor: pointer;
-	width: 100px;
+	width: 105px;
 	opacity: 0;
 	padding: 10px;
 `;

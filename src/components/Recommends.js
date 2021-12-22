@@ -8,13 +8,13 @@ const Recommends = () => {
 	console.log(movies);
 	return (
 		<Container>
-			<h4> Recomended for You</h4>
+			{movies && <h4> Recomended for You</h4>}
 			<Content>
 				{movies &&
 					movies.map((movie, i) => (
 						<Wrap key={i}>
 							{movie.id}
-							<Link to={`/detail/${i}`}>
+							<Link to={`/detail/${movie.id}`}>
 								<img src={movie.cardImg} alt={movie.title} />
 							</Link>
 						</Wrap>
